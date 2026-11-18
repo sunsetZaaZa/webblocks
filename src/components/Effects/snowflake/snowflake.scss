@@ -1,0 +1,74 @@
+@use "sass:math";
+
+$flakes: 80; //match or exceed what is passed in the prop
+$min-size: 2px;
+$max-size: 8px;
+
+.snow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 20;
+}
+
+.snowflake {
+  position: absolute;
+  top: -12vh;
+  left: 0;
+
+  width: $min-size;
+  height: $min-size;
+
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.45);
+
+  transform: translate3d(var(--x), -10vh, 0);
+  animation: snow-fall var(--dur) linear var(--delay) infinite;
+  will-change: transform;
+}
+
+@keyframes snow-fall {
+  0% {
+    transform: translate3d(var(--x), -12vh, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(calc(var(--x) + (var(--drift) * 0.6)), 50vh, 0) rotate(180deg);
+  }
+  100% {
+    transform: translate3d(calc(var(--x) + var(--drift)), 112vh, 0) rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snowflake {
+    animation: none;
+    display: none;
+  }
+}
+
+@for $i from 1 through $flakes {
+  .snowflake:nth-child(#{$i}) {
+    $steps: math.div(($max-size - $min-size), 1px); // unitless
+    $size: $min-size + (math.random($steps + 1) - 1) * 1px;
+
+    $opacity: math.div((math.random(50) + 30), 100); // 0.30 - 0.80
+    $dur: (math.random(12) + 8) * 1s;                // 9s - 20s
+    $delay: math.random(12) * -1s;                   // -1s to -12s
+    $blur: (math.random(4) - 1) * 1px;               // 0px - 3px
+    $x: (math.random(101) - 1) * 1vw;                // 0vw - 100vw
+    $drift: (math.random(25) - 13) * 1vw;            // -12vw to +12vw
+
+    width: $size;
+    height: $size;
+    opacity: $opacity;
+    filter: blur($blur);
+
+    --x: #{$x};
+    --drift: #{$drift};
+    --dur: #{$dur};
+    --delay: #{$delay};
+  }
+}

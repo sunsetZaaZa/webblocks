@@ -1,0 +1,40 @@
+.addToRosterButton {
+  --semantic-button-focus-color: rgb(43, 186, 38);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  margin: 15px auto;
+  padding: 0 7px;
+  cursor: pointer;
+}
+
+.addToRosterButtonActive {
+  border-width: 3px;
+  border-style: solid;
+  border-image: linear-gradient(to top, rgb(43, 186, 38), rgba(0, 0, 0, 0)) 1 100%;
+}
+
+.addToRosterButtonInactive {
+  border-width: 3px;
+  border-style: solid;
+  border-image: linear-gradient(to top, rgb(255, 255, 255), rgba(247, 243, 243, 0.628)) 1 100%;
+}
+
+.rosterActionGroup {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+  margin-right: 14px;
+}
+
+.rosterActionButton {
+  --semantic-button-focus-color: white;
+
+  margin-top: 7px;
+  margin-bottom: 7px;
+  padding: 10px 5px;
+  border: dashed white;
+  cursor: pointer;
+}

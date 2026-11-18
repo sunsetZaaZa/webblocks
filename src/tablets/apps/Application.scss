@@ -1,0 +1,29 @@
+@media (max-width: 411px) {
+    .applicationMassMover {
+        padding-top: 60px;
+        padding-left: 170px;
+        padding-bottom: 10px;
+    }
+
+    .applicationPrivacyNotice {
+        position: absolute;
+        padding-top: 280px;
+        padding-left: 15px;
+        padding-bottom: 10px;
+    }
+}
+
+@media (min-width: 412px) {
+    .applicationMassMover {
+        padding-top: 60px;
+        margin-left: 250px;
+        padding-bottom: 10px;
+    }
+
+    .applicationPrivacyNotice {
+        position: absolute;
+        padding-top: 300px;
+        margin-left: 60px;
+        padding-bottom: 10px;
+    }
+}

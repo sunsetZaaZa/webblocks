@@ -1,0 +1,68 @@
+$control-w: 120px;
+$control-h: 25px;
+$border: 1.5px;
+
+.controlsBoxBorderClosed {
+    position: relative;
+    display: inline-block;
+    width: $control-w;
+    height: $control-h;
+
+    box-sizing: border-box;
+    border-width: $border;
+    border-style: solid;
+    border-color: currentColor;
+
+    vertical-align: middle;
+	border-style:solid;
+}
+
+.controlsBoxBorderOpen {
+    position: relative;
+    display: inline-block;
+    width: $control-w;
+    height: $control-h;
+
+    box-sizing: border-box;
+    border-width: $border;
+    border-style: solid;
+    border-color: currentColor;
+
+    vertical-align: middle;
+
+	border-style:dashed;
+}
+
+.controlsBoxInner {
+    appearance: none;
+    -webkit-appearance: none;
+
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    line-height: 1;
+    cursor: pointer;
+
+    position: absolute;
+    top: -$border;
+    left: -$border;
+    width: calc(100% + (#{$border} * 2));
+    height: calc(100% + (#{$border} * 2));
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: ChakraPetch;
+
+    &:focus {
+        outline: none;
+    }
+    &:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+    }
+}

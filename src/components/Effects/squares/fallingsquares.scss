@@ -1,0 +1,113 @@
+.falling-squares {
+  --parallax-x: 0px;
+  --parallax-y: 0px;
+  --scene-width: 100%;
+  --scene-height: 100%;
+  --fall-distance: 1400px;
+  --drift-multiplier: 1;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--scene-width);
+  height: var(--scene-height);
+  pointer-events: none;
+  z-index: 2;
+  perspective: 900px;
+  transform-style: preserve-3d;
+  overflow: hidden;
+
+  @media (hover: none) and (pointer: coarse) {
+    --drift-multiplier: 1.2;
+  }
+
+  @media (max-width: 480px) and (hover: none) and (pointer: coarse) {
+    --drift-multiplier: 1.35;
+  }
+
+  &__item {
+    position: absolute;
+    left: var(--left);
+    top: -120px;
+    width: var(--size);
+    height: var(--size);
+    opacity: 0;
+    filter: blur(var(--blur));
+    transform-origin: center;
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+    backface-visibility: visible;
+    animation: falling-square var(--duration) linear infinite;
+    animation-delay: calc(var(--delay) * -1s);
+  }
+
+  &__item::before {
+    content: "";
+    position: absolute;
+    inset: 14% 14% auto auto;
+    width: 26%;
+    height: 26%;
+    background: rgba(255, 255, 255, 0.38);
+    pointer-events: none;
+  }
+
+  &__item--outline {
+    border: 1.5px solid rgba(255, 255, 255, 0.82);
+    background: rgba(255, 255, 255, 0.02);
+    box-shadow:
+      0 0 10px rgba(255, 255, 255, 0.12),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
+  &__item--soft {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow:
+      0 0 12px rgba(255, 255, 255, 0.1),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  }
+
+  &__item--ghost {
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
+  }
+}
+
+@keyframes falling-square {
+  0% {
+    opacity: 0;
+    transform:
+      translate3d(
+        calc(var(--parallax-x) + 0px),
+        calc(var(--parallax-y) - 120px),
+        0
+      )
+      rotate(var(--rotation-start))
+      rotateX(0deg)
+      rotateY(0deg)
+      scale(0.92);
+  }
+
+  10% {
+    opacity: var(--opacity);
+  }
+
+  50% {
+    opacity: calc(var(--opacity) * 0.95);
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translate3d(
+        calc(var(--parallax-x) + (var(--drift-x) * var(--drift-multiplier))),
+        calc(var(--parallax-y) + var(--fall-distance)),
+        0
+      )
+      rotate(var(--rotation-end))
+      rotateX(var(--flip-x-end))
+      rotateY(var(--flip-y-end))
+      scale(1.03);
+  }
+}

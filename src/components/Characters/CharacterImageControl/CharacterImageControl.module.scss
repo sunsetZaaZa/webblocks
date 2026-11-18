@@ -1,0 +1,18 @@
+.characterImageButton {
+  --semantic-button-focus-color: #0bb6ccff;
+  --semantic-button-focus-offset: 4px;
+
+  display: inline-grid;
+  place-items: center;
+  line-height: 0;
+  vertical-align: middle;
+}
+
+.characterImageButton img {
+  pointer-events: none;
+}
+
+.characterImage {
+  display: inline-block;
+  vertical-align: middle;
+}
