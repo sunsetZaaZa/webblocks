@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "fonts": [
+    {
+      "path": "src/assets/fonts/ChakraPetchRegular.otf",
+      "sha256": "1a76b0107fcd070bf5c9ccad4ecc6e56d1babd769eaf35238ba9e44ef1e48eb2",
+      "family": "Chakra Petch",
+      "copyright": "Copyright 2018 The Chakra Petch Project Authors (https://github.com/m4rc1e/Chakra-Petch.git)",
+      "embeddedLicense": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL",
+      "license": "OFL-1.1",
+      "evidence": "embedded metadata"
+    },
+    {
+      "path": "src/assets/fonts/CorneritaBlack.ttf",
+      "sha256": "5a5e4b3521f1c072ed3f936c1c6be76f8230adcefff8aad6e3776de10684d6ec",
+      "family": "Cornerita Black",
+      "copyright": "Typeface © (BlueCurve). 2023. All Rights Reserved",
+      "embeddedLicense": "SIL OFL",
+      "license": "OFL-1.1",
+      "evidence": "embedded metadata; version corroborated by third-party listing"
+    },
+    {
+      "path": "src/assets/fonts/CorneritaBold.ttf",
+      "sha256": "5ac91eabf102224d17b1cc28f453e0f88ae3548646ac19d330205d3b21fa6b78",
+      "family": "Cornerita",
+      "copyright": "Typeface © (BlueCurve). 2023. All Rights Reserved",
+      "embeddedLicense": "SIL OFL",
+      "license": "OFL-1.1",
+      "evidence": "embedded metadata; version corroborated by third-party listing"
+    },
+    {
+      "path": "src/assets/fonts/CorneritaRegular.ttf",
+      "sha256": "3ec36789d397c658c4d622c3d59c507f3ce184421c2abcef51ea05de71bcae7f",
+      "family": "Cornerita",
+      "copyright": "Typeface © (BlueCurve). 2023. All Rights Reserved",
+      "embeddedLicense": "SIL OFL",
+      "license": "OFL-1.1",
+      "evidence": "embedded metadata; version corroborated by third-party listing"
+    },
+    {
+      "path": "src/assets/fonts/CorneritaThin.ttf",
+      "sha256": "19e64069e1bcc8fa8fc670cd576e3e1f78cc034acaf1feffc245b81b58bd0191",
+      "family": "Cornerita Thin",
+      "copyright": "Typeface © (BlueCurve). 2023. All Rights Reserved",
+      "embeddedLicense": "SIL OFL",
+      "license": "OFL-1.1",
+      "evidence": "embedded metadata; version corroborated by third-party listing"
+    },
+    {
+      "path": "src/assets/fonts/CorneritaVF.ttf",
+      "sha256": "c1b84ea7467daf0501590ed8ca934ca015bb4acf5ed745090601690badca2554",
+      "family": "Cornerita Variable",
+      "copyright": "Typeface © (BlueCurve). 2023. All Rights Reserved",
+      "embeddedLicense": "SIL OFL",
+      "license": "OFL-1.1",
+      "evidence": "embedded metadata; version corroborated by third-party listing"
+    },
+    {
+      "path": "src/assets/fonts/SanghaKaliRegular.otf",
+      "sha256": "d8707a036c7c9ebffc3a6cbfdafef0de10ef9a09eef71746ab18e6bb04a12c8a",
+      "family": "Sangha Kali",
+      "copyright": "Copyright (c) 2017 by Seslavinskaya Anna. All rights reserved.",
+      "embeddedLicense": "SIL OFL 1.1",
+      "license": "OFL-1.1",
+      "evidence": "embedded metadata"
+    },
+    {
+      "path": "src/assets/fonts/ShareTechMono.otf",
+      "sha256": "ece62cdc094fcf47b195f9491ea7fcac4685e6772d6178014819f94365371c21",
+      "family": "Share Tech Mono",
+      "copyright": "Copyright (c) 2012, Carrois Type Design, Ralph du Carrois (post@carrois.com www.carrois.com), with Reserved Font Name 'Share'",
+      "embeddedLicense": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL",
+      "license": "OFL-1.1",
+      "evidence": "embedded metadata"
+    }
+  ],
+  "artwork": [
+    {
+      "path": "public/characters/blimp_cover_norm_web.png",
+      "sha256": "8cd9ef2eaae809d8194605c0ff8fa2800325e8b25089a7900357183fe3a5e62f",
+      "source": "docs/artwork/wgp-01/characters/blimp_cover_norm_web.svg",
+      "sourceSha256": "8bc4a9afebdec5f8cd2295b460276f374892806a0a0e875fe346c45e0d87903b",
+      "status": "temporary-artwork"
+    },
+    {
+      "path": "public/characters/blimp_reversed_cover_norm_web.png",
+      "sha256": "8d85122c523e8ffd675077aef138784cc8517ecf086deb1d57667d181c7c7458",
+      "source": "docs/artwork/wgp-01/characters/blimp_reversed_cover_norm_web.svg",
+      "sourceSha256": "a07a8abc2e48956a43455b16aa9b4568ac7fe3af6d61ffc14ce1926a0f07031e",
+      "status": "temporary-artwork"
+    },
+    {
+      "path": "public/characters/crunch_norm_right_web.png",
+      "sha256": "fa6fb8eb4af5dd065bc3ca94d0e5773833ef8ff6ca19dc237eb1a5db3b3c2312",
+      "source": "docs/artwork/wgp-01/characters/crunch_norm_right_web.svg",
+      "sourceSha256": "7f5cd1c54f11c5312b0808b3f46f2b7a04b62566f991eb3af9c17b4822dd6c9d",
+      "status": "temporary-artwork"
+    },
+    {
+      "path": "public/controller/animation/pause.png",
+      "sha256": "619027610a8c12df53a3c6a1401b26872e65654d9e6ece4b701bb1ad54df6134",
+      "source": "docs/artwork/wgp-01/controller/animation/pause.svg",
+      "sourceSha256": "f88b1e06683c59f664831868e00a3f468bfbe2b543b0a386937c0a31d31c736b",
+      "status": "replacement-icon"
+    },
+    {
+      "path": "public/controller/animation/play.png",
+      "sha256": "f7d0ad3bd82e42589db457da4a66c2499f490436fd3e519a4e93344267ca0206",
+      "source": "docs/artwork/wgp-01/controller/animation/play.svg",
+      "sourceSha256": "82e2eaa8774522ee182763bfa5765cb9d493b294c8ee17c4b6cf23ed3fcb21a7",
+      "status": "replacement-icon"
+    },
+    {
+      "path": "public/controller/animation/repeat.png",
+      "sha256": "bf6dd58dcd4765bd6dea2ec4f9c334f4e054ea9f45f8ad045e7f3d4290b6f6a6",
+      "source": "docs/artwork/wgp-01/controller/animation/repeat.svg",
+      "sourceSha256": "07b99e965ad2a20521f984d29d8d9850312de318decf134917fd15373d032204",
+      "status": "replacement-icon"
+    },
+    {
+      "path": "public/controller/animation/stop.png",
+      "sha256": "464aca50de44587bc03b5e2661ac811f72fe806755714b0f93f3f5e60ce86995",
+      "source": "docs/artwork/wgp-01/controller/animation/stop.svg",
+      "sourceSha256": "fea1f6ef14aa250e1f4ab34bc40a9bbdd52418f5aedb513de9d9c75f50c55935",
+      "status": "replacement-icon"
+    },
+    {
+      "path": "public/controller/subcontrols/game_controller.png",
+      "sha256": "e0598211a57e0e76d3d280e3b1ae3cbd41e68ef42dd17e6759b5ca36b6cdfc40",
+      "source": "docs/artwork/wgp-01/controller/subcontrols/game_controller.svg",
+      "sourceSha256": "8434cccbc1d1bd307e8ae57ab63d3e54b338a59d74be933a9d23357e94fd878e",
+      "status": "replacement-icon"
+    },
+    {
+      "path": "public/controller/subcontrols/wrench.png",
+      "sha256": "237d5144ad26217c01f5d2eddd4b11e9e6924a04c30557587e9ef2493a66a7e7",
+      "source": "docs/artwork/wgp-01/controller/subcontrols/wrench.svg",
+      "sourceSha256": "e899dfb7b6faaff88588b3f55eee641a459488fac24e90bee502988d10c61a25",
+      "status": "replacement-icon"
+    },
+    {
+      "path": "public/duck.png",
+      "sha256": "6d847298ddf24f3c15ba7ae4cadfeff1ab45b1d249e7e43df78cb23402bf89b9",
+      "source": "docs/artwork/wgp-01/duck.svg",
+      "sourceSha256": "e51169cbc9b1bb8980dc355072a2799dbdb23ffe32427864518477bb01a00429",
+      "status": "temporary-artwork"
+    },
+    {
+      "path": "public/gen_util/left_arrow.png",
+      "sha256": "d5863b411ddc442a57ed4b89cfd1ec3dbe7490bc9dc7dc72553068e367ba43ae",
+      "source": "docs/artwork/wgp-01/gen_util/left_arrow.svg",
+      "sourceSha256": "9b7d47bc9957255421126d3e7764eaa91e4b761503ebe1294b4a6e4b962c8249",
+      "status": "replacement-icon"
+    },
+    {
+      "path": "public/gen_util/upward_arrow.png",
+      "sha256": "56ff6ce2a1201442629866c810f8e86d01cfa67ea6dc81c109b6a0e487e68a60",
+      "source": "docs/artwork/wgp-01/gen_util/upward_arrow.svg",
+      "sourceSha256": "b50c4a169daa0312c1120058601b04d2acffebab28a775c1526fae1373abd0a4",
+      "status": "replacement-icon"
+    }
+  ]
+}

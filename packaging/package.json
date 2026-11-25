@@ -1,0 +1,20 @@
+{
+  "name": "@webblocks/webblocks",
+  "version": "0.1.6",
+  "description": "Webblocks source-first React components and static website starter",
+  "type": "module",
+  "license": "GPL-3.0-or-later",
+  "engines": { "node": ">=22.12.0", "bun": ">=1.4.5" },
+  "files": ["components.d.ts", "src", "public", "starter.json", "bin", "README.md", "LICENSE"],
+  "exports": {
+    ".": { "types": "./src/utilities/asset-path.d.mts", "import": "./src/utilities/asset-path.mjs" },
+    "./assets": { "types": "./src/utilities/asset-path.d.mts", "import": "./src/utilities/asset-path.mjs" },
+    "./components": { "types": "./components.d.ts", "import": "./src/public-api.ts" },
+    "./public/*": "./public/*",
+    "./package.json": "./package.json"
+  },
+  "bin": { "webblocks-create": "./bin/create.mjs" },
+  "sideEffects": ["**/*.scss", "**/*.css"],
+  "peerDependencies": { "react": "^19.2.4", "react-dom": "^19.2.4", "sass": "^1.97.3", "vite": "^7.3.1" },
+  "publishConfig": { "access": "public" }
+}

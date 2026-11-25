@@ -1,0 +1,47 @@
+.scp_scrollbar {
+    height: 12rem;
+    width: 30%;
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(44, 44, 35, 0.782) rgba(255, 255, 255, 0);
+    scroll-behavior: smooth;
+}
+
+.scp_add_to_roster_highlighter {
+    border-width: 3px;
+    border-style: solid;
+    border-image: linear-gradient(to top, rgb(43, 186, 38), rgba(0, 0, 0, 0)) 1 100%;
+}
+
+.scp_add_to_roster_space {
+    border-width: 3px;
+    border-style: solid;
+    border-image: linear-gradient(to top, rgb(255, 255, 255), rgba(247, 243, 243, 0.628)) 1 100%;
+}
+
+@media (max-width: 411px) {
+    .settingsControlPanel {
+        width: auto;
+
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .characterRosterPanel {
+        margin-top: 1rem;
+    }
+}
+
+@media (min-width: 412px) {
+    .settingsControlPanel {
+        width: auto;
+
+        flex-direction: row;
+        gap: 20px;
+    }
+
+    .characterRosterPanel {
+        margin-top: -3rem;
+    }
+}

@@ -1,0 +1,4 @@
+Webblocks: GPL-3.0-or-later (see GPL-3.0.txt).
+Fonts retain their separate SIL Open Font License 1.1; see OFL-1.1.txt and asset-notices.json for copyright and provenance.
+WGP-01 artwork is temporary replacement artwork with editable SVG sources in the repository; it is not recovered original artwork.
+Project-specific media, page text and editor defaults are public when published; repository owners must verify redistribution rights.

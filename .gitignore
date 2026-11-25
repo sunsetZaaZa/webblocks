@@ -1,0 +1,18 @@
+node_modules/
+dist/
+storybook-static/
+coverage/
+.vite/
+*.tsbuildinfo
+playwright-report/
+test-results/
+.env.local
+.env.*.local
+.DS_Store
+
+package-dist/
+
+release-dist/
+
+# Bun is the sole package manager; do not regenerate legacy npm locks.
+package-lock.json

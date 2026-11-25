@@ -1,0 +1,7 @@
+[run]
+bun = true
+
+[install]
+registry = "https://registry.npmjs.org"
+linker = "hoisted"
+auto = "disable"

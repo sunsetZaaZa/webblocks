@@ -1,0 +1,101 @@
+.tooltip {
+
+}
+
+.tooltip .tooltipText {
+  visibility: hidden;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.379);
+  color: #fff;
+  text-align: center;
+  margin: 0 0 0 70px;
+  padding: 1px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltipText {
+  visibility: visible;
+}
+
+.hero-copy {
+  display: block;
+  margin-top: 25px;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-wrap: balance;
+}
+
+@media (width < 377px) {
+  .bodyMassMover {
+    position: absolute;
+    margin-left: 13rem;
+    margin-top: 1rem;
+    font-size: 18px;
+    font-family: CorneritaBold;
+    cursor: default
+  }
+
+  .editorPanel {
+    margin-left: 2px;
+  }
+
+  .editorToggleBtn {
+    display: flex;
+    margin-left: 2px;
+  }
+
+  .characterEditor {
+    margin-left: 2px;
+  }
+}
+
+@media (377px < width < 411px) {
+  .bodyMassMover {
+    position: absolute;
+    margin-left: 13rem;
+    margin-top: 4rem;
+    font-size: 18px;
+    font-family: CorneritaBold;
+    cursor: default
+  }
+
+  .editorPanel {
+    margin-left: 2px;
+  }
+
+  .editorToggleBtn {
+    display: flex;
+    margin-left: 2px;
+  }
+
+  .characterEditor {
+    margin-left: 2px;
+  }
+}
+
+@media (min-width: 412px) {
+  .bodyMassMover {
+    position: absolute;
+    margin-left: 13rem;
+    margin-top: 4rem;
+    font-size: 18px;
+    font-family: CorneritaBold;
+    cursor: default
+  }
+
+  .editorPanel {
+    margin-left: 10px;
+  }
+
+  .editorToggleBtn {
+    display: flex;
+    margin-left: 7rem;
+  }
+
+  .characterEditor {
+    margin-left: 160px;
+  }
+}

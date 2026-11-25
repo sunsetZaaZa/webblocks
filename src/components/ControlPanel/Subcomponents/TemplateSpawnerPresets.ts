@@ -1,0 +1,13 @@
+import { nanoid } from "nanoid";
+
+import { CharacterSizesPresets } from "../../../state-management/slices/presets/AnimationPreset";
+import { CharacterAttribute, CharacterSubType, CharacterType, NaturalOrientation, PresetSizeIdentifier } from "../../Characters/CharacterMetadata";
+import { TemplateScrollSpawnerProp } from "./TemplateSpawnerTypes";
+
+export const selectableCharacters: TemplateScrollSpawnerProp[] = [
+    {character:{identifier: nanoid(), type: CharacterType.blimp, subType: CharacterSubType.unset, orientation: NaturalOrientation.leftFacing, sizes: CharacterSizesPresets.get({characterType: CharacterType.blimp, id: PresetSizeIdentifier.template}) ?? {width: 74, height: 48}, switches: {useHighlighter: true, uprightHighlighter: false}, credits: 'brit' } },
+    {character:{identifier: nanoid(), type: CharacterType.blimp, subType: CharacterSubType.unset, orientation: NaturalOrientation.rightFacing, sizes: CharacterSizesPresets.get({characterType: CharacterType.blimp, id: PresetSizeIdentifier.template}) ?? {width: 74, height: 48}, switches: {useHighlighter: true, uprightHighlighter: false}, credits: 'brit' } },
+    {character:{identifier: nanoid(), type: CharacterType.crunch, subType: CharacterSubType.unset, orientation: NaturalOrientation.neutral, attributes: [CharacterAttribute.speaking], speaking: "Monster trucks for all ducks", sizes: CharacterSizesPresets.get({characterType: CharacterType.crunch, id: PresetSizeIdentifier.template}) ?? {width: 48, height: 48}, switches: {outputSpeaking: false, useHighlighter: true, uprightHighlighter: false}, credits: 'snow feet'}, },
+    {character:{identifier: nanoid(), type: CharacterType.blimp, subType: CharacterSubType.unset, orientation: NaturalOrientation.rightFacing, attributes: [CharacterAttribute.speaking], speaking: "Made of evaporated oxygen", sizes: CharacterSizesPresets.get({characterType: CharacterType.blimp, id: PresetSizeIdentifier.template}) ?? {width: 74, height: 48}, switches: {outputSpeaking: false, useHighlighter: true, uprightHighlighter: false}} },
+    {character:{identifier: nanoid(), type: CharacterType.crunch, subType: CharacterSubType.unset, orientation: NaturalOrientation.neutral, sizes: CharacterSizesPresets.get({characterType: CharacterType.crunch, id: PresetSizeIdentifier.template}) ?? {width: 48, height: 48}, switches: {useHighlighter: true, uprightHighlighter: false}, credits: 'snow feet' }},
+];

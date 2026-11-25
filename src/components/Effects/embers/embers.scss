@@ -1,0 +1,189 @@
+.webfall-embers-root {
+  --scene-width: 100%;
+  --scene-height: 100%;
+  --y0: -120px;
+  --y1: calc(100% + 180px);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--scene-width);
+  height: var(--scene-height);
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.webfall-embers {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  z-index: 3;
+  overflow: hidden;
+
+  top: 0;
+  left: 0;
+  width: var(--scene-width);
+  height: var(--scene-height);
+
+  mix-blend-mode: screen;
+}
+
+.webfall-embers__pY {
+  position: absolute;
+  left: var(--x);
+  top: 0;
+
+  width: 0;
+  height: 0;
+
+  opacity: var(--alpha, 1);
+  will-change: transform;
+
+  animation-name: webfall-ember-fall;
+  animation-duration: var(--fall-duration, 12s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* Mid wrapper: handles gust wind only (big X/Y moves) */
+.webfall-embers__pX {
+  display: block;
+  will-change: transform;
+
+  transform: translate3d(
+    var(--wind-offset-x, 0px),
+    var(--wind-offset-y, 0px),
+    0
+  );
+}
+
+/* One-shot gust tween: from current offset -> target offset (no return) */
+.webfall-embers__pX--gust {
+  animation-name: webfall-ember-gust-to;
+  animation-duration: var(--wind-duration, 0.9s);
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+/* Inner visual: ember + smoke + sway + flicker */
+.webfall-embers__ember {
+  position: relative;
+  display: block;
+
+  width: var(--size, 4px);
+  height: var(--size, 4px);
+  border-radius: 999px;
+
+  background: radial-gradient(
+    circle at 35% 35%,
+    hsla(var(--hue, 28), 100%, 72%, 1) 0%,
+    hsla(var(--hue, 28), 100%, 58%, 0.95) 35%,
+    hsla(var(--hue, 28), 100%, 40%, 0.75) 62%,
+    hsla(var(--hue, 28), 100%, 20%, 0.05) 100%
+  );
+
+  filter: drop-shadow(0 0 calc(8px * var(--glow, 0.7)) hsla(var(--hue, 28), 100%, 60%, 0.75))
+          drop-shadow(0 0 calc(14px * var(--glow, 0.7)) hsla(var(--hue, 28), 100%, 55%, 0.25));
+
+  will-change: transform, opacity, filter;
+
+  animation:
+    webfall-ember-sway var(--sway-duration, 3.5s) ease-in-out infinite alternate,
+    webfall-ember-flicker var(--flicker-duration, 1.2s) steps(2, end) infinite;
+}
+
+/* Soft glow halo */
+.webfall-embers__ember::before {
+  content: "";
+  position: absolute;
+  inset: -120%;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle,
+    hsla(var(--hue, 28), 100%, 65%, 0.35) 0%,
+    hsla(var(--hue, 28), 100%, 55%, 0.12) 40%,
+    transparent 72%
+  );
+  filter: blur(6px);
+  opacity: clamp(0.25, var(--glow, 0.7), 1);
+  pointer-events: none;
+}
+
+/* Smoke trail that "bleeds" upward behind the ember */
+.webfall-embers__ember::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(-1 * var(--smoke-length, 46px));
+  transform: translateX(-50%);
+  width: max(2px, calc(var(--size, 4px) * 0.75));
+  height: var(--smoke-length, 46px);
+  border-radius: 999px;
+
+  background: linear-gradient(
+    to bottom,
+    hsla(0, 0%, 90%, 0.0) 0%,
+    hsla(0, 0%, 85%, calc(var(--smoke-alpha, 0.18) * 0.45)) 18%,
+    hsla(0, 0%, 78%, var(--smoke-alpha, 0.18)) 55%,
+    hsla(0, 0%, 70%, 0) 100%
+  );
+
+  filter: blur(6px);
+  opacity: 1;
+  pointer-events: none;
+
+  animation: webfall-smoke var(--smoke-duration, 2.4s) ease-out infinite;
+}
+
+/* ====== Animations ====== */
+
+@keyframes webfall-ember-fall {
+  0%   { transform: translate3d(0, var(--y0), 0); }
+  100% { transform: translate3d(0, var(--y1), 0); }
+}
+
+@keyframes webfall-ember-sway {
+  0%   { transform: translate3d(calc(-1 * var(--sway-distance, 12px)), 0, 0) rotate(-10deg); }
+  100% { transform: translate3d(var(--sway-distance, 12px), 0, 0) rotate(10deg); }
+}
+
+@keyframes webfall-ember-flicker {
+  0%   { opacity: 0.85; filter: brightness(1.0) saturate(1.1) blur(0px); }
+  50%  { opacity: 1.00; filter: brightness(1.25) saturate(1.2) blur(0px); }
+  100% { opacity: 0.78; filter: brightness(0.95) saturate(1.05) blur(0.1px); }
+}
+
+@keyframes webfall-smoke {
+  0%   { opacity: 0.0; transform: translateX(-50%) translateY(10px) scaleY(0.85); }
+  30%  { opacity: 1.0; transform: translateX(-50%) translateY(0px) scaleY(1.0); }
+  100% { opacity: 0.0; transform: translateX(-50%) translateY(-14px) scaleY(1.25); }
+}
+
+@keyframes webfall-ember-gust-to {
+  from {
+    transform: translate3d(
+      var(--wind-from-x, 0px),
+      var(--wind-from-y, 0px),
+      0
+    );
+  }
+  to {
+    transform: translate3d(
+      var(--wind-to-x, 0px),
+      var(--wind-to-y, 0px),
+      0
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .webfall-embers__pY,
+  .webfall-embers__pX--gust,
+  .webfall-embers__ember,
+  .webfall-embers__ember::after {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "assets": [
+    {
+      "path": "characters/blimp_cover_norm_web.png",
+      "status": "temporary-artwork",
+      "source": "docs/artwork/wgp-01/characters/blimp_cover_norm_web.svg"
+    },
+    {
+      "path": "characters/blimp_reversed_cover_norm_web.png",
+      "status": "temporary-artwork",
+      "source": "docs/artwork/wgp-01/characters/blimp_reversed_cover_norm_web.svg"
+    },
+    {
+      "path": "characters/crunch_norm_right_web.png",
+      "status": "temporary-artwork",
+      "source": "docs/artwork/wgp-01/characters/crunch_norm_right_web.svg"
+    },
+    {
+      "path": "controller/animation/pause.png",
+      "status": "replacement-icon",
+      "source": "docs/artwork/wgp-01/controller/animation/pause.svg"
+    },
+    {
+      "path": "controller/animation/play.png",
+      "status": "replacement-icon",
+      "source": "docs/artwork/wgp-01/controller/animation/play.svg"
+    },
+    {
+      "path": "controller/animation/repeat.png",
+      "status": "replacement-icon",
+      "source": "docs/artwork/wgp-01/controller/animation/repeat.svg"
+    },
+    {
+      "path": "controller/animation/stop.png",
+      "status": "replacement-icon",
+      "source": "docs/artwork/wgp-01/controller/animation/stop.svg"
+    },
+    {
+      "path": "controller/subcontrols/game_controller.png",
+      "status": "replacement-icon",
+      "source": "docs/artwork/wgp-01/controller/subcontrols/game_controller.svg"
+    },
+    {
+      "path": "controller/subcontrols/wrench.png",
+      "status": "replacement-icon",
+      "source": "docs/artwork/wgp-01/controller/subcontrols/wrench.svg"
+    },
+    {
+      "path": "duck.png",
+      "status": "temporary-artwork",
+      "source": "docs/artwork/wgp-01/duck.svg"
+    },
+    {
+      "path": "gen_util/left_arrow.png",
+      "status": "replacement-icon",
+      "source": "docs/artwork/wgp-01/gen_util/left_arrow.svg"
+    },
+    {
+      "path": "gen_util/upward_arrow.png",
+      "status": "replacement-icon",
+      "source": "docs/artwork/wgp-01/gen_util/upward_arrow.svg"
+    }
+  ]
+}

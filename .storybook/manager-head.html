@@ -1,0 +1,28 @@
+<script id="webblocks-idle-compat">
+  // Storybook 10.6.8 schedules sibling-story preloads using requestIdleCallback.
+  // Preserve a complete native implementation. Older WebKit needs a timer-based
+  // approximation in the actual manager, including when served outside tests.
+  (() => {
+    const scope = window;
+    if (typeof scope.requestIdleCallback === 'function' &&
+        typeof scope.cancelIdleCallback === 'function') return;
+
+    // Install the pair together so cancellation always uses the matching handles.
+    scope.requestIdleCallback = (callback, options) => {
+      if (typeof callback !== 'function') throw new TypeError('Expected an idle callback');
+      const scheduled = scope.performance.now();
+      const timeout = options?.timeout;
+      return scope.setTimeout(() => {
+        const start = scope.performance.now();
+        const didTimeout = typeof timeout === 'number' && Number.isFinite(timeout) &&
+          start - scheduled >= Math.max(0, timeout);
+        const deadline = start + 16;
+        callback({
+          didTimeout,
+          timeRemaining: () => didTimeout ? 0 : Math.max(0, deadline - scope.performance.now()),
+        });
+      }, 1);
+    };
+    scope.cancelIdleCallback = handle => scope.clearTimeout(handle);
+  })();
+</script>

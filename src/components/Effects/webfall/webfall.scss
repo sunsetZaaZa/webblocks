@@ -1,0 +1,153 @@
+.webfall-scene {
+  --scene-width: 100%;
+  --scene-height: 100%;
+  --y0: -120px;
+  --y25: 25%;
+  --y50: 50%;
+  --y75: 75%;
+  --y1: calc(100% + 180px);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--scene-width);
+  height: var(--scene-height);
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.webfall {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--scene-width, 100%);
+  height: var(--scene-height, 100%);
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.webfall--fixed {
+  position: fixed;
+  inset: 0;
+  width: auto;
+  height: auto;
+}
+
+.webfall__item {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  --x: 0px;
+  --drift: 0px;
+  --windOffset: 0px;
+  --turb: 0px;
+  --dur: 12s;
+  --delay: 0s;
+
+  transform: translate3d(var(--x), var(--y0), 0);
+  animation: webfall-fall var(--dur) linear var(--delay) infinite;
+  will-change: transform;
+}
+
+.webfall__item--snow {
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.45);
+}
+
+.webfall__item--image {
+  border-radius: 0;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.25));
+  animation-name: webfall-fall-image;
+  transform-origin: 50% 25%;
+}
+
+@keyframes webfall-fall {
+  0% {
+    transform: translate3d(
+        calc(var(--x) + var(--windOffset) + var(--turb)),
+        var(--y0),
+        0
+      )
+      rotate(0deg);
+  }
+
+  50% {
+    transform: translate3d(
+        calc(var(--x) + var(--windOffset) + (var(--drift) * 0.6) + (var(--turb) * 0.6)),
+        var(--y50),
+        0
+      )
+      rotate(180deg);
+  }
+
+  100% {
+    transform: translate3d(
+        calc(var(--x) + var(--windOffset) + var(--drift) + var(--turb)),
+        var(--y1),
+        0
+      )
+      rotate(360deg);
+  }
+}
+
+@keyframes webfall-fall-image {
+  0% {
+    transform: translate3d(
+        calc(var(--x) + var(--windOffset) + var(--turb)),
+        var(--y0),
+        0
+      )
+      rotate(-8deg);
+  }
+
+  25% {
+    transform: translate3d(
+        calc(var(--x) + var(--windOffset) + (var(--drift) * 0.25) + (var(--turb) * 0.25)),
+        var(--y25),
+        0
+      )
+      rotate(6deg);
+  }
+
+  50% {
+    transform: translate3d(
+        calc(var(--x) + var(--windOffset) + (var(--drift) * 0.6) + (var(--turb) * 0.6)),
+        var(--y50),
+        0
+      )
+      rotate(-5deg);
+  }
+
+  75% {
+    transform: translate3d(
+        calc(var(--x) + var(--windOffset) + (var(--drift) * 0.85) + (var(--turb) * 0.85)),
+        var(--y75),
+        0
+      )
+      rotate(7deg);
+  }
+
+  100% {
+    transform: translate3d(
+        calc(var(--x) + var(--windOffset) + var(--drift) + var(--turb)),
+        var(--y1),
+        0
+      )
+      rotate(-8deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .webfall__item {
+    animation: none;
+    display: none;
+  }
+}

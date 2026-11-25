@@ -1,0 +1,33 @@
+.header {
+  --semantic-button-disclosure-gap: 7px;
+  --semantic-button-focus-color: blanchedalmond;
+
+  align-items: center;
+  color: blanchedalmond;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.arrow {
+  flex: 0 0 auto;
+  height: 20px;
+  transition: transform 120ms ease-in-out;
+  width: 20px;
+}
+
+.arrowExpanded {
+  transform: rotate(180deg);
+}
+
+.rule {
+  border-top: thin solid blanchedalmond;
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 55px;
+}
+
+.title {
+  display: inline-block;
+  white-space: nowrap;
+}

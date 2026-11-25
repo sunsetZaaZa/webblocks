@@ -1,0 +1,63 @@
+.semanticButton {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  text-transform: inherit;
+  line-height: inherit;
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.semanticButton:focus {
+  outline: none;
+}
+
+.semanticButton:focus-visible {
+  outline: var(--semantic-button-focus-width, 2px) solid
+    var(--semantic-button-focus-color, currentColor);
+  outline-offset: var(--semantic-button-focus-offset, 3px);
+}
+
+.semanticButton:disabled,
+.semanticButton[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: var(--semantic-button-disabled-opacity, 0.58);
+}
+
+.reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inline {
+  display: inline;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--semantic-button-action-gap, 0.35rem);
+}
+
+.disclosure {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--semantic-button-disclosure-gap, 0.5rem);
+  width: var(--semantic-button-disclosure-width, auto);
+}
+
+.image {
+  display: inline-grid;
+  place-items: center;
+  line-height: 0;
+}

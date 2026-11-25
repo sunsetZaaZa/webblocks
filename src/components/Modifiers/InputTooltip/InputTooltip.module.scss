@@ -1,0 +1,20 @@
+.tooltipRoot {
+  display: inline-block;
+  position: relative;
+}
+
+.tooltipRoot:hover .tooltipContent,
+.tooltipRoot:focus-within .tooltipContent {
+  display: inline;
+}
+
+.tooltipContent {
+  display: none;
+  position: absolute;
+  font-family: CorneritaRegular, sans-serif;
+  pointer-events: auto;
+}
+
+.tooltipAction {
+  text-align: left;
+}

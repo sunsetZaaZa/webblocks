@@ -1,0 +1,20 @@
+name: Webblocks CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Webblocks validation
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      working_directory: ${{ vars.WEBBLOCKS_WORKING_DIRECTORY || '.' }}

@@ -1,0 +1,276 @@
+name: Reusable Webblocks qualification
+
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        description: Webblocks directory relative to the caller repository root
+        type: string
+        default: '.'
+      publish_pages:
+        description: Upload an official Pages artifact instead of an ordinary CI artifact
+        type: boolean
+        default: false
+      pages_base_url:
+        type: string
+        default: ''
+      pages_base_path:
+        type: string
+        default: ''
+    outputs:
+      artifact_name:
+        description: Qualified Pages artifact name (production only)
+        value: ${{ jobs.validate.outputs.artifact_name }}
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Webblocks validation
+    if: ${{ !inputs.publish_pages || ((github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)) }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    timeout-minutes: 85
+    defaults:
+      run:
+        shell: bash
+    env:
+      CI: 'true'
+    outputs:
+      artifact_name: ${{ steps.metadata.outputs.artifact_name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Validate Webblocks working directory
+        id: workspace
+        env:
+          SITE_DIRECTORY: ${{ inputs.working_directory }}
+        working-directory: .
+        run: |
+          set -euo pipefail
+          directory=$SITE_DIRECTORY
+          if [[ "$directory" != '.' ]]; then
+            [[ "$directory" =~ ^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*$ ]] || { echo '::error::Invalid Webblocks working directory'; exit 1; }
+            IFS=/ read -ra parts <<< "$directory"
+            current=.
+            for part in "${parts[@]}"; do
+              [[ "$part" != '.' && "$part" != '..' && "$part" != '.git' ]] || { echo '::error::Unsafe directory segment'; exit 1; }
+              current="$current/$part"
+              [[ -d "$current" && ! -L "$current" ]] || { echo '::error::Missing directory or symbolic link'; exit 1; }
+            done
+          fi
+          for file in .bun-version bunfig.toml package.json bun.lock webblocks.config.json; do
+            [[ -f "$directory/$file" && ! -L "$directory/$file" ]] || { echo "::error::Missing or linked Webblocks file: $file"; exit 1; }
+          done
+          printf 'directory=%s\n' "$directory" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: ${{ steps.workspace.outputs.directory }}/.bun-version
+
+      - name: Initialize diagnostics
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: |
+          mkdir -p test-results
+          bun --version | tee test-results/runtime.log
+          test "$(bun --version)" = "$(cat .bun-version)"
+
+      - name: Validate Pages metadata
+        id: metadata
+        if: ${{ inputs.publish_pages }}
+        env:
+          PAGES_BASE_URL: ${{ inputs.pages_base_url }}
+          PAGES_BASE_PATH: ${{ inputs.pages_base_path }}
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun scripts/pages-metadata.mjs 2>&1 | tee test-results/pages-metadata.log
+
+      - name: Baseline checks
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run test:baseline 2>&1 | tee test-results/baseline.log
+
+      - name: Security and licensing inventory
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run security:inventory 2>&1 | tee test-results/security.log
+
+      - name: Generate CycloneDX SBOM
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run --silent security:sbom > test-results/sbom.cdx.json
+
+      - name: Check locked dependency advisories
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: |
+          set +e
+          bun run --silent security:audit > test-results/bun-audit.json
+          status=$?
+          set -e
+          if [[ "$status" -ne 0 ]]; then
+            cat test-results/bun-audit.json
+            exit "$status"
+          fi
+
+      - name: Install locked dependencies
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: |
+          bun install --frozen-lockfile 2>&1 | tee test-results/install.log
+          git diff --exit-code -- bun.lock package.json
+
+      - name: Type checking
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run typecheck 2>&1 | tee test-results/typecheck.log
+
+      - name: Lint
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run lint 2>&1 | tee test-results/lint.log
+
+      - name: Unit tests
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run test:unit 2>&1 | tee test-results/unit.log
+
+      - name: Install browser engines and system dependencies
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run pw:install --with-deps chromium firefox webkit 2>&1 | tee test-results/browser-install.log
+
+      - name: Packed framework consumer test
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run test:package-consumer 2>&1 | tee test-results/package-consumer.log
+
+      - name: Storybook component interaction tests
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run test:storybook 2>&1 | tee test-results/storybook-interactions.log
+
+      - name: Storybook static builds and browser tests
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run test:storybook-static 2>&1 | tee test-results/storybook-static.log
+
+      - name: Vite deployment tests
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run test:deployment 2>&1 | tee test-results/deployment.log
+
+      - name: Static Pages matrix
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run test:static 2>&1 | tee test-results/static-matrix.log
+
+      - name: Routing browser tests
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run test:routing 2>&1 | tee test-results/routing.log
+
+      - name: Multi-repository persistence and configuration tests
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run test:persistence-browser 2>&1 | tee test-results/persistence.log
+
+      - name: Package-generated multi-repository qualification
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run test:multi-repository 2>&1 | tee test-results/multi-repository.log
+
+      - name: Local production build
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        env:
+          WEBBLOCKS_DEPLOYMENT: local
+          WEBBLOCKS_BASE_PATH: '/'
+        run: bun run build 2>&1 | tee test-results/build-local.log
+
+      - name: Docker profile build
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run build:docker 2>&1 | tee test-results/build-docker.log
+
+      - name: Repository Pages build
+        env:
+          PUBLISH_PAGES: ${{ inputs.publish_pages }}
+          QUALIFIED_BASE_PATH: ${{ steps.metadata.outputs.base_path }}
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: |
+          if [[ "$PUBLISH_PAGES" == true ]]; then
+            export WEBBLOCKS_BASE_PATH="$QUALIFIED_BASE_PATH"
+          fi
+          bun run build:pages --manifest 2>&1 | tee test-results/build-pages.log
+
+      - name: Assemble repository Storybook
+        env:
+          PUBLISH_PAGES: ${{ inputs.publish_pages }}
+          QUALIFIED_BASE_PATH: ${{ steps.metadata.outputs.base_path }}
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: |
+          if [[ "$PUBLISH_PAGES" == true ]]; then
+            export WEBBLOCKS_BASE_PATH="$QUALIFIED_BASE_PATH"
+          fi
+          bun run assemble:pages 2>&1 | tee test-results/assemble-pages.log
+
+      - name: Add third-party and corresponding source notices
+        env:
+          PUBLISH_PAGES: ${{ inputs.publish_pages }}
+          REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+          SITE_DIRECTORY: ${{ steps.workspace.outputs.directory }}
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run security:legal 2>&1 | tee test-results/legal.log
+
+      - name: Scan public deployment artifact
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: bun run security:artifact 2>&1 | tee test-results/artifact-security.log
+
+      - name: Qualify exact Pages artifact
+        env:
+          PUBLISH_PAGES: ${{ inputs.publish_pages }}
+          QUALIFIED_BASE_PATH: ${{ steps.metadata.outputs.base_path }}
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: |
+          if [[ "$PUBLISH_PAGES" == true ]]; then
+            export WEBBLOCKS_BASE_PATH="$QUALIFIED_BASE_PATH"
+          fi
+          bun run verify:pages 2>&1 | tee test-results/static-qualification.log
+
+      - name: Qualify exact artifact across browser engines
+        env:
+          PUBLISH_PAGES: ${{ inputs.publish_pages }}
+          QUALIFIED_BASE_PATH: ${{ steps.metadata.outputs.base_path }}
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: |
+          if [[ "$PUBLISH_PAGES" == true ]]; then
+            export WEBBLOCKS_BASE_PATH="$QUALIFIED_BASE_PATH"
+          fi
+          bun run verify:browsers 2>&1 | tee test-results/cross-browser.log
+
+      - name: Check qualified artifact has not changed
+        env:
+          PUBLISH_PAGES: ${{ inputs.publish_pages }}
+          QUALIFIED_BASE_PATH: ${{ steps.metadata.outputs.base_path }}
+        working-directory: ${{ steps.workspace.outputs.directory }}
+        run: |
+          if [[ "$PUBLISH_PAGES" == true ]]; then
+            export WEBBLOCKS_BASE_PATH="$QUALIFIED_BASE_PATH"
+          fi
+          bun scripts/assert-pages-artifact.mjs --require-cross-browser 2>&1 | tee test-results/artifact-integrity.log
+
+      # Ordinary CI artifact, not a Pages deployment artifact.
+      - name: Upload qualified Pages build
+        if: ${{ success() && !inputs.publish_pages }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: webblocks-pages-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.workspace.outputs.directory }}/dist/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload qualified Pages artifact
+        if: ${{ success() && inputs.publish_pages }}
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          name: ${{ steps.metadata.outputs.artifact_name }}
+          path: ${{ steps.workspace.outputs.directory }}/dist/
+          include-hidden-files: true
+          retention-days: 1
+
+      - name: Upload validation diagnostics
+        if: ${{ always() && steps.workspace.outcome == 'success' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: webblocks-validation-${{ inputs.publish_pages && 'production' || 'ci' }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.workspace.outputs.directory }}/test-results/
+          if-no-files-found: warn
+          retention-days: 14

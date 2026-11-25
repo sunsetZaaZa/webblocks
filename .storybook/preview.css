@@ -1,0 +1,27 @@
+/* Storybook only. The production application stylesheet is not modified. */
+.webblocks-story-surface {
+  color: inherit;
+  font-family: ChakraPetch, sans-serif;
+  max-width: 100%;
+}
+
+.webblocks-story-surface a {
+  color: #9ccaff;
+}
+
+/* Bound decorative effects to the preview without changing application CSS. */
+.webblocks-effect-story {
+  position: relative;
+  height: 320px;
+  width: 100%;
+  overflow: hidden;
+}
+.webblocks-effect-story .webfall {
+  --scene-width: 320px;
+  --scene-height: 320px;
+  --y0: -40px;
+  --y25: 25%;
+  --y50: 50%;
+  --y75: 75%;
+  --y1: calc(100% + 40px);
+}

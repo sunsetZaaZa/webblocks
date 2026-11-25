@@ -1,0 +1,132 @@
+import { describe, expect, it } from 'vitest'
+import { createSiteStore } from './store'
+import { encodeEditorConfig, projectEditorConfig } from './editor-config.mjs'
+import { LEGACY_KEY, storageKey, snapshot } from './persistence.mjs'
+import { addCharacterToRoster, clearSavedCharacterSheet, importEditorConfiguration, importLegacyCharacterSheet, openControlPanel, resetCharacterSheet, setTargetFPS, togglePersist } from './slices/AnimationSlice'
+import { initialState } from './slices/presets/AnimationPreset'
+import { UIBranch } from './models/UIBranch'
+import { CharacterType } from '../components/Characters/CharacterMetadata'
+
+function memoryStorage() {
+  const map = new Map<string, string>()
+  return { getItem: (key: string) => map.get(key) ?? null, setItem: (key: string, value: string) => { map.set(key, value) }, removeItem: (key: string) => { map.delete(key) } }
+}
+const add = addCharacterToRoster({ uiBranch: UIBranch.homepage, charStat: { ...initialState.characterTracker[0].chars[0], type: CharacterType.crunch, speaking: 'Site-specific character' } })
+
+describe('site store persistence middleware', () => {
+  it('serializes the real initial state and reloads roster and editor preferences independently', () => {
+    const storage = memoryStorage()
+    expect(snapshot(initialState).characterTracker).toHaveLength(8)
+    const a = createSiteStore('a', storage)
+    const b = createSiteStore('b', storage)
+    a.dispatch(add)
+    a.dispatch(openControlPanel())
+    a.dispatch(setTargetFPS(55))
+    const reload = createSiteStore('a', storage).getState().animation
+    expect(reload.characterTracker[0].chars.slice(-1)[0]?.speaking).toBe('Site-specific character')
+    expect(reload.openControlPanel).toBe(true)
+    expect(reload.menuFields.targetFPS).toBe(55)
+    expect(b.getState().animation.characterTracker).toEqual(initialState.characterTracker)
+    expect(createSiteStore('b', storage).getState().animation.menuFields.targetFPS).toBe(initialState.menuFields.targetFPS)
+  })
+  it('persists opt-out, resumes writes immediately and scopes reset and clear', () => {
+    const storage = memoryStorage()
+    const a = createSiteStore('a', storage)
+    const b = createSiteStore('b', storage)
+    b.dispatch(setTargetFPS(40))
+    const savedB = storage.getItem(storageKey('b'))
+    a.dispatch(togglePersist(false))
+    a.dispatch(add)
+    a.dispatch(setTargetFPS(77))
+    expect(JSON.parse(storage.getItem(storageKey('a'))!)).toEqual({ siteId: 'a', version: 1, enabled: false })
+    expect(createSiteStore('a', storage).getState().animation.menuFields.presistCharacters).toBe(false)
+    a.dispatch(togglePersist(true))
+    expect(createSiteStore('a', storage).getState().animation.menuFields.targetFPS).toBe(77)
+    a.dispatch(resetCharacterSheet())
+    expect(createSiteStore('a', storage).getState().animation.characterTracker).toEqual(snapshot(initialState).characterTracker)
+    a.dispatch(clearSavedCharacterSheet())
+    expect(storage.getItem(storageKey('a'))).toBeNull()
+    expect(a.getState().animation.menuFields.targetFPS).toBe(initialState.menuFields.targetFPS)
+    expect(storage.getItem(storageKey('b'))).toBe(savedB)
+  })
+  it('requires explicit import and protects invalid saved data until clear', () => {
+    const storage = memoryStorage()
+    const legacy = JSON.stringify({ animation: JSON.stringify({ ...initialState, menuFields: { ...initialState.menuFields, targetFPS: 92 } }) })
+    storage.setItem(LEGACY_KEY, legacy)
+    storage.setItem(storageKey('a'), '{bad')
+    const a = createSiteStore('a', storage)
+    expect(a.getState().animation.legacyAvailable).toBe(true)
+    expect(a.getState().animation.persistenceNotice).toMatch(/invalid/)
+    expect(a.getState().animation.menuFields.targetFPS).toBe(initialState.menuFields.targetFPS)
+    a.dispatch(openControlPanel())
+    expect(storage.getItem(storageKey('a'))).toBe('{bad')
+    a.dispatch(importLegacyCharacterSheet())
+    expect(createSiteStore('a', storage).getState().animation.menuFields.targetFPS).toBe(92)
+    expect(storage.getItem(LEGACY_KEY)).toBe(legacy)
+    a.dispatch(clearSavedCharacterSheet())
+    expect(storage.getItem(LEGACY_KEY)).toBe(legacy)
+  })
+})
+
+
+describe('portable editor configuration', () => {
+  const portable = () => ({ ...projectEditorConfig(initialState), menuFields: { ...projectEditorConfig(initialState).menuFields, targetFPS: 46 }, characterTracker: initialState.characterTracker.map(entry => ({ ...entry, chars: [] })) })
+  const raw = (siteId: string) => JSON.stringify({ format: 'webblocks-editor-config', schemaVersion: 1, siteId, data: portable() })
+  it('validates the actual framework preset and exports committed edits', () => {
+    const a = createSiteStore('a', memoryStorage())
+    a.dispatch(add)
+    expect(() => encodeEditorConfig(a.getState().animation, 'a')).not.toThrow()
+  })
+  it('imports only the target site, preserves panel state and replaces a protected record explicitly', () => {
+    const storage = memoryStorage()
+    const b = createSiteStore('b', storage)
+    b.dispatch(setTargetFPS(99))
+    const savedB = storage.getItem(storageKey('b'))
+    storage.setItem(storageKey('a'), '{corrupt')
+    const a = createSiteStore('a', storage)
+    a.dispatch(openControlPanel())
+    a.dispatch(importEditorConfiguration(raw('b')))
+    expect(storage.getItem(storageKey('a'))).toBe('{corrupt')
+    expect(a.getState().animation.characterTracker).toEqual(initialState.characterTracker)
+    a.dispatch(importEditorConfiguration(raw('a')))
+    expect(a.getState().animation.openControlPanel).toBe(true)
+    expect(a.getState().animation.characterTracker.every(entry => entry.chars.length === 0)).toBe(true)
+    expect(createSiteStore('a', storage).getState().animation.menuFields.targetFPS).toBe(46)
+    expect(storage.getItem(storageKey('b'))).toBe(savedB)
+  })
+  it('imports into memory without changing opt-out or saving until enabled', () => {
+    const storage = memoryStorage()
+    const a = createSiteStore('a', storage)
+    a.dispatch(togglePersist(false))
+    const marker = storage.getItem(storageKey('a'))
+    a.dispatch(importEditorConfiguration(raw('a')))
+    expect(a.getState().animation.menuFields.targetFPS).toBe(46)
+    expect(a.getState().animation.menuFields.presistCharacters).toBe(false)
+    expect(storage.getItem(storageKey('a'))).toBe(marker)
+    expect(createSiteStore('a', storage).getState().animation.menuFields.targetFPS).toBe(initialState.menuFields.targetFPS)
+    a.dispatch(togglePersist(true))
+    expect(createSiteStore('a', storage).getState().animation.menuFields.targetFPS).toBe(46)
+  })
+  it('uses published defaults for fresh, opted-out, reset, clear and invalid storage, but honors saved edits', () => {
+    const storage = memoryStorage()
+    const defaults = portable()
+    const a = createSiteStore('a', storage, defaults)
+    expect(a.getState().animation.menuFields.targetFPS).toBe(46)
+    expect(a.getState().animation.characterTracker).toEqual(defaults.characterTracker)
+    a.dispatch(setTargetFPS(77))
+    a.dispatch(add)
+    expect(createSiteStore('a', storage, defaults).getState().animation.menuFields.targetFPS).toBe(77)
+    a.dispatch(resetCharacterSheet())
+    expect(a.getState().animation.characterTracker).toEqual(defaults.characterTracker)
+    expect(a.getState().animation.menuFields.targetFPS).toBe(77)
+    a.dispatch(clearSavedCharacterSheet())
+    expect(a.getState().animation.menuFields.targetFPS).toBe(46)
+    expect(storage.getItem(storageKey('a'))).toBeNull()
+    a.dispatch(togglePersist(false))
+    expect(createSiteStore('a', storage, defaults).getState().animation.menuFields.targetFPS).toBe(46)
+    expect(createSiteStore('a', storage, defaults).getState().animation.menuFields.presistCharacters).toBe(false)
+    storage.setItem(storageKey('a'), '{bad')
+    expect(createSiteStore('a', storage, defaults).getState().animation.menuFields.targetFPS).toBe(46)
+    expect(storage.getItem(storageKey('a'))).toBe('{bad')
+  })
+})

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "siteId": "auto",
+  "site": {
+    "title": "React Website Editor",
+    "description": "React, TypeScript and Vite website editor and presentation framework.",
+    "language": "en-US"
+  },
+  "repository": null,
+  "deployment": {
+    "target": "local",
+    "basePath": "auto",
+    "routing": "auto"
+  },
+  "storybook": { "publish": true },
+  "editor": { "enabled": true, "persistence": "local" },
+  "features": { "characters": true, "effects": true, "animations": true }
+}

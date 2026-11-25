@@ -1,0 +1,36 @@
+.root {
+  --semantic-button-focus-color: #0bb6ccff;
+
+  display: block;
+  width: 90px;
+  height: 30px;
+  position: relative;
+  color: #0bb6ccff;
+}
+
+.content {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.label {
+  position: absolute;
+  width: 90px;
+  margin-left: 5px;
+  font-weight: bold;
+  color: #0bb6ccff;
+}
+
+.tooltip {
+  display: none;
+  position: absolute;
+  font-family: CorneritaRegular, sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.tooltipVisible {
+  display: inline;
+}

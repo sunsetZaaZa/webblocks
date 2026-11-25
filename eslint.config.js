@@ -1,0 +1,90 @@
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import tseslint from 'typescript-eslint'
+
+export default tseslint.config(
+  { ignores: ['dist', 'storybook-static'] },
+  {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '../Common',
+              message:
+                'Use direct implementation-file imports instead of local barrel imports.',
+            },
+            {
+              name: '../../Common',
+              message:
+                'Use direct implementation-file imports instead of local barrel imports.',
+            },
+            {
+              name: '../../../Common',
+              message:
+                'Use direct implementation-file imports instead of local barrel imports.',
+            },
+            {
+              name: '../CharacterImageControl',
+              message:
+                'Use direct implementation-file imports instead of local barrel imports.',
+            },
+            {
+              name: '../CollapsibleSettingsHeader',
+              message:
+                'Use direct implementation-file imports instead of local barrel imports.',
+            },
+            {
+              name: './decorators',
+              message:
+                'Use direct implementation-file imports instead of local barrel imports.',
+            },
+            {
+              name: './fixtures',
+              message:
+                'Use direct implementation-file imports instead of local barrel imports.',
+            },
+            {
+              name: '../fixtures',
+              message:
+                'Use direct implementation-file imports instead of local barrel imports.',
+            },
+            {
+              name: '../../components/Common',
+              message:
+                'Use direct implementation-file imports instead of local barrel imports.',
+            },
+            {
+              name: '../src/test/storybook/decorators',
+              message:
+                'Use direct implementation-file imports instead of local barrel imports.',
+            },
+            {
+              name: '../src/test/storybook/fixtures',
+              message:
+                'Use direct implementation-file imports instead of local barrel imports.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+)
